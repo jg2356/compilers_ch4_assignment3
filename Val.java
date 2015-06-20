@@ -13,7 +13,7 @@ public class Val {
     	Class<?> vt = value.getClass();
     
     	if (vt != t)
-    		throw new RuntimeException("Type mismatch: expected " + vt.getName() + " instead of " + t.getName());
+    		throw new RuntimeException("Type mismatch: expected " + t.getName() + " instead of " + vt.getName());
     	
     	return t.cast(value);
     }

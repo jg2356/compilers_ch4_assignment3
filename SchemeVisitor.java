@@ -53,8 +53,12 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
         return new Val(value);
     }
 
-    @Override public Val visitIfexpr(MSSParser.IfexprContext ctx) { 
-        return visitChildren(ctx); 
+    @Override public Val visitIfexpr(MSSParser.IfexprContext ctx) {
+        if (visit(ctx.expr(0)).getBoolean()) {
+            return visit(ctx.expr(1));
+        } else {
+            return visit(ctx.expr(2));
+        }
     }
 
     @Override public Val visitOpexpr(MSSParser.OpexprContext ctx) {
