@@ -3,15 +3,21 @@ grammar MSS;
 prog: (expr NEWLINE)+
     ;
 expr: DOUBLE # double
-    | '(' RATOR expr* ')' # operation
+    | BOOLEAN # boolean
+    | '(' RATOR expr* ')' # opexpr
     | '(' 'def' ID expr ')' # defvar
+    | '(' 'if' expr expr expr ')' # ifexpr
     | ID # refvar
     ;
 
-ID: LETTER (LETTER|DIGIT|'_')* ;
-RATOR: '^' | '*' | '/' | '+' | '-' ;
-NEWLINE: '\r'?'\n' ;
+RATOR: ARITHMETIC_OP | RELATIONAL_OP | BOOLEAN_OP ; 
+ARITHMETIC_OP: '^' | '*' | '/' | '+' | '-' ;
+RELATIONAL_OP: '=' | '>' | '<' ;
+BOOLEAN_OP: '&' | '|' | '!' ;
+BOOLEAN: 'true' | 'false' ;
 DOUBLE: ('-')? DIGIT+ ( '.' DIGIT+)? ;
+ID: LETTER (LETTER|DIGIT|'_')* ;
+NEWLINE: '\r'?'\n' ;
 WS: [ \t] -> skip ;
 fragment
  DIGIT: [0-9] ;
