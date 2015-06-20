@@ -12,20 +12,15 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
     @Override public Val visitDefvar(MSSParser.DefvarContext ctx) {
         String id = ctx.ID().getText();
         Val value = visit(ctx.expr());
-
         variables.put(id, value);
-
         return value;
     }
 
     @Override public Val visitRefvar(MSSParser.RefvarContext ctx) { 
         String id = ctx.ID().getText();
-
         Val value = variables.get(id);
-
         if (value == null)
             throw new RuntimeException(id + " is not defined.");
-
         return value;
     }
 
@@ -150,7 +145,6 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                 {
                     if (ctx.expr().size() != 1)
                         throw new RuntimeException("illegal: ! operator must have exactly 1 expression argument.");
-
                     Boolean result = visit(ctx.expr(0)).getBoolean();
                     return new Val(!result);
                 }

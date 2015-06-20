@@ -10,11 +10,9 @@ public class Val {
     }
 
     private <T> T getValue(Class<T> t) {
-    	Class<?> vt = value.getClass();
-    
+    	Class<?> vt = value.getClass();    
     	if (vt != t)
     		throw new RuntimeException("Type mismatch: expected " + t.getName() + " instead of " + vt.getName());
-    	
     	return t.cast(value);
     }
     
