@@ -7,10 +7,6 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
     public SchemeVisitor()
     {
         variables = new HashMap<String, Val>();
-
-        //These are default identity values for arithmetic operators
-        variables.put("/", new Val(1.0));
-        variables.put("-", new Val(0.0));
     }
 
     @Override public Val visitDefvar(MSSParser.DefvarContext ctx) {
@@ -72,14 +68,6 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                     }
                     return new Val(result);
                 }
-            case "^":
-                {
-                    Double result = 1.0;
-                    for (MSSParser.ExprContext expr : ctx.expr()) {
-                        result = Math.pow(result, visit(expr).getDouble());
-                    }
-                    return new Val(result);               
-                }
             case "*":
                 {
                     Double result = 1.0;
@@ -88,21 +76,36 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                     }
                     return new Val(result);
                 }
-            case "/":
-                 {
-                    if (ctx.expr().isEmpty())
-                        throw new RuntimeException("illegal: (/ )");
-
+            case "^":
+                {
                     Double result = null;
+                    if (ctx.expr().size() < 2) {
+                        result = 1.0;
+                    }
                     for (MSSParser.ExprContext expr : ctx.expr()) {
                         if (result == null)
                         {
-                            if (ctx.expr().size() > 1) {
-                                result = visit(expr).getDouble();
-                                continue;
-                            }
-                            result = 1.0;
+                            result = visit(expr).getDouble();
+                            continue;
                         }
+                        result = Math.pow(result, visit(expr).getDouble());
+                    }
+                    return new Val(result);
+                }                
+            case "/":
+                {
+                    if (ctx.expr().isEmpty())
+                        throw new RuntimeException("illegal: (/ )");
+                    Double result = null;
+                    if (ctx.expr().size() < 2) {
+                        result = 1.0;
+                    }
+                    for (MSSParser.ExprContext expr : ctx.expr()) {
+                        if (result == null)
+                        {
+                            result = visit(expr).getDouble();
+                            continue;
+                        }                        
                         result = result / visit(expr).getDouble();
                     }
                     return new Val(result);
@@ -111,17 +114,16 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                 {
                     if (ctx.expr().isEmpty())
                         throw new RuntimeException("illegal: (- )");
-
                     Double result = null;
+                    if (ctx.expr().size() < 2) {
+                        result = 0.0;
+                    }
                     for (MSSParser.ExprContext expr : ctx.expr()) {
                         if (result == null)
                         {
-                            if (ctx.expr().size() > 1) {
-                                result = visit(expr).getDouble();
-                                continue;
-                            }
-                            result = 0.0;
-                        }
+                            result = visit(expr).getDouble();
+                            continue;
+                        }                    
                         result = result - visit(expr).getDouble();
                     }
                     return new Val(result);
