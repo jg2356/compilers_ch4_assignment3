@@ -144,7 +144,7 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
             case "!":
                 {
                     if (ctx.expr().size() != 1)
-                        throw new RuntimeException("illegal: ! operator must have exactly 1 expression argument.");
+                        throw new RuntimeException("illegal: ! operator must have exactly 1 expr argument.");
                     Boolean result = visit(ctx.expr(0)).getBoolean();
                     return new Val(!result);
                 }
@@ -159,13 +159,48 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                             continue;
                         }
                         Object cvalue = visit(expr).getValue();
-
                         result = result && (pvalue.equals(cvalue));
                         pvalue = cvalue;
                         if (!result) break;
                     }
                     return new Val(result);
                 }
+            case ">":
+                {
+                    if (ctx.expr().size() < 1)
+                        throw new RuntimeException("illegal: > operator must have at least 1 expr argument."); 
+                    Boolean result = true;
+                    Double pvalue = null;
+                    for (MSSParser.ExprContext expr : ctx.expr()) {
+                        if (pvalue == null)
+                        {
+                            pvalue = visit(expr).getDouble();
+                            continue;
+                        }
+                        Double cvalue = visit(expr).getDouble();
+                        result = result && (pvalue > cvalue);
+                        if (!result) break;
+                    }
+                    return new Val(result);
+                }
+            case "<":
+                {
+                    if (ctx.expr().size() < 1)
+                        throw new RuntimeException("illegal: < operator must have at least 1 expr argument."); 
+                    Boolean result = true;
+                    Double pvalue = null;
+                    for (MSSParser.ExprContext expr : ctx.expr()) {
+                        if (pvalue == null)
+                        {
+                            pvalue = visit(expr).getDouble();
+                            continue;
+                        }
+                        Double cvalue = visit(expr).getDouble();
+                        result = result && (pvalue < cvalue);
+                        if (!result) break;
+                    }
+                    return new Val(result);
+                }                
             default:
                 throw new RuntimeException("illegal operator: " + op);
         }
