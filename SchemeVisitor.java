@@ -167,8 +167,6 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                 }
             case ">":
                 {
-                    if (ctx.expr().size() < 1)
-                        throw new RuntimeException("illegal: > operator must have at least 1 expr argument."); 
                     Boolean result = true;
                     Double pvalue = null;
                     for (MSSParser.ExprContext expr : ctx.expr()) {
@@ -185,8 +183,6 @@ public class SchemeVisitor extends MSSBaseVisitor<Val> {
                 }
             case "<":
                 {
-                    if (ctx.expr().size() < 1)
-                        throw new RuntimeException("illegal: < operator must have at least 1 expr argument."); 
                     Boolean result = true;
                     Double pvalue = null;
                     for (MSSParser.ExprContext expr : ctx.expr()) {
